@@ -2,9 +2,9 @@
 
 A personal-finance tracker built as a full-stack project:
 
-- **Flutter** app (Material 3, dark theme, animated charts) — the mobile/web client
+- **Flutter** app (Material 3, light/dark/system theme, animated charts) — the mobile/web client
 - **FastAPI** REST API with **JWT authentication** and **SQLAlchemy** ORM (SQLite by default, Postgres-ready)
-- **Automatic API docs** via Swagger UI at `/docs`
+- **Automatic API docs** via Swagger UI at `/docs` (when running locally)
 
 ## Features
 
@@ -13,7 +13,11 @@ A personal-finance tracker built as a full-stack project:
 - Transactions: create, edit, delete with type, amount, category, date, note
 - Filters: type (in/out), category, month, plus client-side note/category search
 - Dashboard: total balance, this month's income/spent, recent activity
-- Stats: spending-by-category pie chart + 6-month income/expense bar chart
+- Stats: spending-by-category pie (name legend, 2-col grid) + 6-month income/expense bar chart
+- Budgets per category + progress bars and over-budget warnings
+- Category manager (add/edit/delete with color + icon picker)
+- CSV export of transactions via share sheet
+- Light / dark / system theme + 30-currency selector (local preference)
 - Token persisted securely on device (`shared_preferences`) with session restore
 - Owner-scoped data: every query is scoped to the authenticated user
 
@@ -21,19 +25,20 @@ A personal-finance tracker built as a full-stack project:
 
 ```
 backend/
-  app/
-    main.py               FastAPI app + CORS + routers
-    database.py           SQLAlchemy engine/session (SQLite default)
-    models.py             User, Category, Transaction
-    schemas.py            Pydantic request/response models
-    security.py           bcrypt hashing + JWT issue/verify
-    deps.py               get_current_user dependency
-    routers/
-      auth.py             /auth/register, /auth/login, /auth/me
-      transactions.py     /transactions CRUD + filters
-      categories.py       /categories CRUD
-      stats.py            /stats/summary (balance, slices, trend)
-expense_tracker/
+   app/
+     main.py               FastAPI app + CORS + routers
+     database.py           SQLAlchemy engine/session (SQLite default)
+     models.py             User, Category, Transaction, Budget
+     schemas.py            Pydantic request/response models
+     security.py           bcrypt hashing + JWT issue/verify
+     deps.py               get_current_user dependency
+     routers/
+       auth.py             /auth/register, /auth/login, /auth/me
+       transactions.py     /transactions CRUD + filters
+       categories.py       /categories CRUD
+       budgets.py          /budgets CRUD (monthly limits)
+       stats.py            /stats/summary (balance, slices, trend, budgets)
+ expense_tracker/
   lib/
     api/                  HTTP client + typed repository
     models/               User, Category, Transaction, Summary
@@ -41,7 +46,7 @@ expense_tracker/
     screens/              login, register, home, dashboard,
                           transactions, stats, settings, txn sheet
     widgets/              transaction tile
-    theme.dart            Material 3 dark theme
+     theme.dart            Material 3 light/dark themes
 ```
 
 ## Getting started
@@ -54,9 +59,8 @@ Requires Python 3.11+.
 cd backend
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
+# then open http://localhost:8000/docs for the Swagger UI (local only)
 ```
-
-Interactive docs: http://localhost:8000/docs
 
 Environment variables (optional):
 
@@ -122,15 +126,16 @@ flutter test
 | POST   | `/transactions`       | Create transaction                |
 | PUT    | `/transactions/{id}`  | Update transaction                |
 | DELETE | `/transactions/{id}`  | Delete transaction                |
-| GET    | `/stats/summary`      | Balance, month totals, category slices, N-month trend |
+| GET    | `/stats/summary`      | Balance, month totals, category slices, N-month trend + budgets |
+| GET    | `/budgets`            | List monthly budgets |
+| PUT    | `/budgets/{categoryId}` | Create/update budget limit |
+| DELETE | `/budgets/{categoryId}` | Delete budget |
 
 ## Roadmap (nice-to-haves)
 
-- Budgets per category with over-budget alerts
 - Recurring transactions
-- CSV export
-- Dark/light theme toggle
 - Deployment (Docker + Postgres, hosted Flutter web build)
+- Biometric app lock + push notifications
 
 ## Tech stack
 
