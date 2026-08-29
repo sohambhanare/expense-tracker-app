@@ -1,0 +1,32 @@
+# Environment / secrets
+*.db
+*.sqlite3
+__pycache__/
+*.pyc
+.env
+.pytest_cache/
+
+# Flutter / Dart build artifacts
+**/build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Colab sample data + output artifacts
+sample_data/
+apk_download/
+
+# Notebook infra config (contains machine metadata, not project files)
+.config/
